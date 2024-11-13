@@ -30,11 +30,11 @@ end
 ---@param config_name string
 ---@param config_def table Config definition read from `lspconfig.configs.<name>`.
 function configs.__newindex(t, config_name, config_def)
-  validate ('name', config_name, 's')
-  validate ('default_config', config_def.default_config, 't')
-  validate ('on_new_config', config_def.on_new_config, 'f', true)
-  validate ('on_attach', config_def.on_attach, 'f', true)
-  validate ('commands', config_def.commands, 't', true)
+  validate ('name', config_name, 'string')
+  validate ('default_config', config_def.default_config, 'table')
+  validate ('on_new_config', config_def.on_new_config, 'function', true)
+  validate ('on_attach', config_def.on_attach, 'function', true)
+  validate ('commands', config_def.commands, 'table', true)
   --validate {
     --name = { config_name, 's' },
     --default_config = { config_def.default_config, 't' },
@@ -75,12 +75,12 @@ function configs.__newindex(t, config_name, config_def)
   function M.setup(user_config)
     local lsp_group = api.nvim_create_augroup('lspconfig', { clear = false })
 
-    validate ('cmd', user_config.cmd, { 't', 'f' }, true)
-    validate ('root_dir', user_config.root_dir, { 's', 'f' }, true)
-    validate ('filetypes', user_config.filetypes, 't', true)
-    validate ('on_new_config', user_config.on_new_config, 'f', true)
-    validate ('on_attach', user_config.on_attach, 'f', true)
-    validate ('commands', user_config.commands, 't', true)
+    validate ('cmd', user_config.cmd, { 'table', 'function' }, true)
+    validate ('root_dir', user_config.root_dir, { 'string', 'function' }, true)
+    validate ('filetypes', user_config.filetypes, 'table', true)
+    validate ('on_new_config', user_config.on_new_config, 'function', true)
+    validate ('on_attach', user_config.on_attach, 'function', true)
+    validate ('commands', user_config.commands, 'table', true)
     --validate {
       --cmd = {
         --user_config.cmd,
