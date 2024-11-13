@@ -30,18 +30,12 @@ end
 ---@param config_name string
 ---@param config_def table Config definition read from `lspconfig.configs.<name>`.
 function configs.__newindex(t, config_name, config_def)
+
   validate ('name', config_name, 'string')
   validate ('default_config', config_def.default_config, 'table')
   validate ('on_new_config', config_def.on_new_config, 'function', true)
   validate ('on_attach', config_def.on_attach, 'function', true)
   validate ('commands', config_def.commands, 'table', true)
-  --validate {
-    --name = { config_name, 's' },
-    --default_config = { config_def.default_config, 't' },
-    --on_new_config = { config_def.on_new_config, 'f', true },
-    --on_attach = { config_def.on_attach, 'f', true },
-    --commands = { config_def.commands, 't', true },
-  --}
 
   if config_def.default_config.deprecate then
     vim.deprecate(
@@ -55,10 +49,12 @@ function configs.__newindex(t, config_name, config_def)
 
   if config_def.commands then
     for k, v in pairs(config_def.commands) do
-      validate {
-        ['command.name'] = { k, 's' },
-        ['command.fn'] = { v[1], 'f' },
-      }
+      validate ('command.name', k, 'string')
+      validate ('command.fn', v[1], 'function')
+      --validate {
+        --['command.name'] = { k, 's' },
+        --['command.fn'] = { v[1], 'f' },
+      --}
     end
   else
     config_def.commands = {}
@@ -81,24 +77,15 @@ function configs.__newindex(t, config_name, config_def)
     validate ('on_new_config', user_config.on_new_config, 'function', true)
     validate ('on_attach', user_config.on_attach, 'function', true)
     validate ('commands', user_config.commands, 'table', true)
-    --validate {
-      --cmd = {
-        --user_config.cmd,
-        --{ 'f', 't' },
-        --true,
-      --},
-      --root_dir = { user_config.root_dir, { 's', 'f' }, true },
-      --filetypes = { user_config.filetype, 't', true },
-      --on_new_config = { user_config.on_new_config, 'f', true },
-      --on_attach = { user_config.on_attach, 'f', true },
-      --commands = { user_config.commands, 't', true },
-    --}
+
     if user_config.commands then
       for k, v in pairs(user_config.commands) do
-        validate {
-          ['command.name'] = { k, 's' },
-          ['command.fn'] = { v[1], 'f' },
-        }
+        validate ('command.name', k, 'string')
+        validate ('command.fn', v[1], 'function')
+        --validate {
+          --['command.name'] = { k, 's' },
+          --['command.fn'] = { v[1], 'f' },
+        --}
       end
     end
 
