@@ -30,13 +30,18 @@ end
 ---@param config_name string
 ---@param config_def table Config definition read from `lspconfig.configs.<name>`.
 function configs.__newindex(t, config_name, config_def)
-  validate {
-    name = { config_name, 's' },
-    default_config = { config_def.default_config, 't' },
-    on_new_config = { config_def.on_new_config, 'f', true },
-    on_attach = { config_def.on_attach, 'f', true },
-    commands = { config_def.commands, 't', true },
-  }
+  validate ('name', config_name, 's')
+  validate ('default_config', config_def.default_config, 't')
+  validate ('on_new_config', config_def.on_new_config, 'f', true)
+  validate ('on_attach', config_def.on_attach, 'f', true)
+  validate ('commands', config_def.commands, 't', true)
+  --validate {
+    --name = { config_name, 's' },
+    --default_config = { config_def.default_config, 't' },
+    --on_new_config = { config_def.on_new_config, 'f', true },
+    --on_attach = { config_def.on_attach, 'f', true },
+    --commands = { config_def.commands, 't', true },
+  --}
 
   if config_def.default_config.deprecate then
     vim.deprecate(
@@ -70,18 +75,24 @@ function configs.__newindex(t, config_name, config_def)
   function M.setup(user_config)
     local lsp_group = api.nvim_create_augroup('lspconfig', { clear = false })
 
-    validate {
-      cmd = {
-        user_config.cmd,
-        { 'f', 't' },
-        true,
-      },
-      root_dir = { user_config.root_dir, { 's', 'f' }, true },
-      filetypes = { user_config.filetype, 't', true },
-      on_new_config = { user_config.on_new_config, 'f', true },
-      on_attach = { user_config.on_attach, 'f', true },
-      commands = { user_config.commands, 't', true },
-    }
+    validate ('cmd', user_config.cmd, { 't', 'f' }, true)
+    validate ('root_dir', user_config.root_dir, { 's', 'f' }, true)
+    validate ('filetypes', user_config.filetypes, 't', true)
+    validate ('on_new_config', user_config.on_new_config, 'f', true)
+    validate ('on_attach', user_config.on_attach, 'f', true)
+    validate ('commands', user_config.commands, 't', true)
+    --validate {
+      --cmd = {
+        --user_config.cmd,
+        --{ 'f', 't' },
+        --true,
+      --},
+      --root_dir = { user_config.root_dir, { 's', 'f' }, true },
+      --filetypes = { user_config.filetype, 't', true },
+      --on_new_config = { user_config.on_new_config, 'f', true },
+      --on_attach = { user_config.on_attach, 'f', true },
+      --commands = { user_config.commands, 't', true },
+    --}
     if user_config.commands then
       for k, v in pairs(user_config.commands) do
         validate {
